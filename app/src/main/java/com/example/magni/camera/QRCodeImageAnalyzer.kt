@@ -1,6 +1,7 @@
 package com.example.magni.camera
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.zxing.BarcodeFormat
@@ -31,7 +32,11 @@ class QRCodeImageAnalyzer(private val onQrCodeDetected: (String) -> Unit) : Imag
 
         try {
             val result = barcodeReader.decode(binaryBitmap)
-            onQrCodeDetected(result.text)
+            val delimiter = """{"signatures"""
+            Log.d("QRCodeAnalyzer", "QR Code Detected: ${result.text}")
+            if (result.text.startsWith(delimiter)) {
+                onQrCodeDetected(result.text)
+            }
         } catch (e: Exception) {
             // Not a QR Code
         } finally {

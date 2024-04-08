@@ -16,18 +16,26 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.magni.R
 import com.example.magni.camera.QRCodeImageAnalyzer
 import com.example.magni.databinding.FragmentScanQrCodeBinding
+import com.example.magni.viewmodel.KeyViewModel
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
+import com.solana.core.DerivationPath
+import com.solana.core.HotAccount
+import org.bitcoinj.core.Base58
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 class ScanQRCodeFragment : Fragment() {
 
     private var _binding: FragmentScanQrCodeBinding? = null
     private val binding get() = _binding!!
     private var qrCodeDetected = false
+    private val viewModel: KeyViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -119,7 +127,9 @@ class ScanQRCodeFragment : Fragment() {
     }
 
     private fun displaySignedTransactionQRCode() {
-        val signedTransactionQRBitmap = generateQRCode("Transaction is signed")
+        val message = binding.tvDecodedQR.text.toString()
+        val signature = signTransaction(message)
+        val signedTransactionQRBitmap = generateQRCode(signature)
         binding.ivGeneratedQR.setImageBitmap(signedTransactionQRBitmap)
         binding.ivGeneratedQR.visibility = View.VISIBLE
         binding.tvDecodedQR.visibility = View.GONE
@@ -143,5 +153,22 @@ class ScanQRCodeFragment : Fragment() {
             }
         }
         return bmp
+    }
+
+    private fun signTransaction(messageJSON: String): String {
+        var account = HotAccount()
+        val messageByteArray = messageJSON.toByteArray(Charsets.UTF_8)
+        viewModel.firstKey.observe(viewLifecycleOwner) { keyEntity ->
+            val phrase24 = keyEntity?.name
+                ?.removePrefix("[")
+                ?.removeSuffix("]")
+                ?.split(", ")
+                ?.map { it.trim() }
+            account =
+                HotAccount.fromMnemonic(phrase24!!, "", DerivationPath.BIP44_M_44H_501H_0H)
+        }
+        val signature = account.sign(messageByteArray).toString()
+        Log.d("SignTransaction", "Signature: $signature")
+        return signature
     }
 }
