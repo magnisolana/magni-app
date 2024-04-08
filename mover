@@ -1,0 +1,14 @@
+#!/bin/bash
+
+src_dir="/Users/caron/Projects/colosseum/magni-app/test2"
+dest_dir="/Users/caron/Projects/colosseum/magni-app/test1"
+
+# Iterate over all files in src_dir
+find "$src_dir" -type f -print0 | while IFS= read -r -d '' file; do
+    # Get the path to the file relative to src_dir
+    relative_path="${file#$src_dir/}"
+    # Create the destination directory if it doesn't exist
+    mkdir -p "$dest_dir/$(dirname "$relative_path")"
+    # Move the file
+    mv "$file" "$dest_dir/$relative_path"
+done

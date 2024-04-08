@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/keyInfoFragment">
+
+    <fragment
+        android:id="@+id/keyInfoFragment"
+        android:name="com.example.magni.ui.fragment.KeyInfoFragment"
+        android:label="fragment_key_info"
+        tools:layout="@layout/fragment_key_info">
+        <action
+            android:id="@+id/action_keyInfoFragment_to_mainScreenFragment"
+            app:destination="@id/mainScreenFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mainScreenFragment"
+        android:name="com.example.magni.ui.fragment.MainScreenFragment"
+        android:label="fragment_main_screen"
+        tools:layout="@layout/fragment_main_screen">
+        <action
+            android:id="@+id/action_mainScreenFragment_to_scanQRCodeFragment"
+            app:destination="@id/scanQRCodeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/scanQRCodeFragment"
+        android:name="com.example.magni.ui.fragment.ScanQRCodeFragment"
+        android:label="fragment_scan_qr_code"
+        tools:layout="@layout/fragment_scan_qr_code">
+        <action
+            android:id="@+id/action_scanQRCodeFragment_to_mainScreenFragment"
+            app:destination="@id/mainScreenFragment" />
+    </fragment>
+
+</navigation>
