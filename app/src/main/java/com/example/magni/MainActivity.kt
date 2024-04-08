@@ -47,8 +47,6 @@ class MainActivity : AppCompatActivity() {
 
             }
             else -> {
-                // Directly ask for the permission.
-                // The registered ActivityResultCallback gets the result of this request.
                 requestPermissionLauncher.launch(
                     Manifest.permission.CAMERA
                 )
