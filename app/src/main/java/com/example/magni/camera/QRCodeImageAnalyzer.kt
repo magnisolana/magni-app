@@ -32,10 +32,10 @@ class QRCodeImageAnalyzer(private val onQrCodeDetected: (String) -> Unit) : Imag
 
         try {
             val result = barcodeReader.decode(binaryBitmap)
-            val delimiter = """{"signatures"""
+            val delimiter = """solana:"""
             Log.d("QRCodeAnalyzer", "QR Code Detected: ${result.text}")
             if (result.text.startsWith(delimiter)) {
-                onQrCodeDetected(result.text)
+                onQrCodeDetected(result.text.substringAfter(delimiter))
             }
         } catch (e: Exception) {
             // Not a QR Code
